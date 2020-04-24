@@ -1,7 +1,7 @@
 # Git repo metadata
 TAG = $(shell git describe --tags --always)
 # TODO: if your docher hub account name is different then this on github ovrwrite this this variable with docer hub accout name
-PREFIX = $(shell git config --get remote.origin.url | tr ':.' '/'  | rev | cut -d '/' -f 3 | rev)
+PREFIX = rafaljuraszek
 # TODO: if your repository name is different then this github repository name on ovrwrite this variable with docer hub repo name
 REPO_NAME = $(shell git config --get remote.origin.url | tr ':.' '/'  | rev | cut -d '/' -f 2 | rev)
 
@@ -15,7 +15,7 @@ SCHEMA_URL = http://example.com
 # Vendor set to github user name
 SCEHMA_VENDOR = $(PREFIX)
 
-SCHEMA_VSC_URL = https://github.com/$(PREFIX)/$(REPO_NAME)
+SCHEMA_VSC_URL = https://github.com/RafalJuraszek/$(REPO_NAME)
 
 # git commit shirt sha
 SCHEMA_VCS_REF = $(shell git rev-parse --short HEAD)
@@ -39,11 +39,16 @@ image:
 		--build-arg SCHEMA_BUILD_DATE="$(SCHEMA_BUILD_DATE)" \
 		--build-arg SCHEMA_BUILD_VERSION="$(SCHEMA_BUILD_VERSION)" \
 		--build-arg SCHEMA_CMD="$(SCHEMA_CMD)" \
-	
+		-t $(SCHEMA_NAME):latest \
+		.
+		
+	docker tag $(SCHEMA_NAME) $(SCHEMA_NAME):$(TAG)
   # TODO: last part of this command that tags just built image with a specyfic tag
 	
 push: image
 	# TODO: two commands, first pushes the latest image, second pushes the image tagged with specyfic tag
+	docker push $(SCHEMA_NAME):latest
+	docker push $(SCHEMA_NAME):$(TAG)
 	
 clean:
 
